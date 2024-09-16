@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int dfs(int i,bool buying,vector<int>& prices,unordered_map<long,int> &umap){
+        if(i>=prices.size()){
+            return 0;
+        }
+        long key=static_cast<long>(i) << 1 | static_cast<long>(buying);
+        if(umap.count(key)>0){
+            return umap[key];
+        }
+        int cooldown=dfs(i+1,buying,prices,umap);
+        if(buying){
+            int buy=dfs(i+1,!buying,prices,umap)-prices[i];
+            umap[key]=max(cooldown,buy);
+        }else{
+            int sell=dfs(i+2,!buying,prices,umap)+prices[i];
+            umap[key]=max(cooldown,sell);
+        }
+        return umap[key];
+    }
+    int maxProfit(vector<int>& prices) {
+       unordered_map<long,int> umap;
+        return dfs(0,true,prices,umap);
+    }
+};
